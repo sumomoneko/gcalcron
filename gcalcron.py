@@ -30,6 +30,7 @@ from dateutil.tz import gettz
 import time
 import subprocess
 import re
+import codecs
 import logging
 
 logger = logging.getLogger(__name__)
@@ -263,7 +264,7 @@ class GCalCron:
         logger.debug(cmd)
 
         p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        (stdout, stderr) = p.communicate(command['command'])
+        (stdout, stderr) = p.communicate(command['command'].encode('utf-8'))
 
         logger.debug(stdout)
         logger.debug(stderr)
@@ -405,6 +406,8 @@ def datetime_to_at(dt):
 
 
 def main(argv):
+  sys.stdout = codecs.lookup('utf-8')[-1](sys.stdout)
+  sys.stderr = codecs.lookup('utf-8')[-1](sys.stderr)
   # Parse the command-line flags.
   flags = parser.parse_args(argv[1:])
 
